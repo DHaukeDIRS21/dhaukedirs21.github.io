@@ -100,26 +100,7 @@
   </style>
 </head>
 <body>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const container = document.getElementById("news-container");
-    const entries = Array.from(container.querySelectorAll(".email-entry"));
 
-    // Sortiere nach Datum (neueste zuerst)
-    entries.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date));
-
-    // Nur die ersten 10 behalten, alle anderen entfernen
-    const maxEntries = 7;
-    const limitedEntries = entries.slice(0, maxEntries);
-    const extraEntries = entries.slice(maxEntries);
-
-    // Einfügen der begrenzten Einträge
-    limitedEntries.forEach(entry => container.appendChild(entry));
-
-    // Optional: Entfernen der alten (falls bereits im DOM)
-    extraEntries.forEach(entry => entry.remove());
-  });
-</script>
   <header>
     <h1>Technical News</h1>
   </header>
@@ -180,10 +161,26 @@
   Weitere Details und aktuelle Neuigkeiten findet ihr wie gewohnt auf unseren SharePoint Seiten von PO, Dev & SysAdmin – schaut dort gerne regelmäßig vorbei.
 </p>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("news-container");
+    const entries = Array.from(container.querySelectorAll(".email-entry"));
 
+    // Sortiere nach Datum (neueste zuerst)
+    entries.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date));
 
+    // Nur die ersten 10 behalten, alle anderen entfernen
+    const maxEntries = 7;
+    const limitedEntries = entries.slice(0, maxEntries);
+    const extraEntries = entries.slice(maxEntries);
 
+    // Einfügen der begrenzten Einträge
+    limitedEntries.forEach(entry => container.appendChild(entry));
 
+    // Optional: Entfernen der alten (falls bereits im DOM)
+    extraEntries.forEach(entry => entry.remove());
+  });
+</script>
 
 </body>
 </html>
