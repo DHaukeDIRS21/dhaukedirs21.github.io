@@ -79,7 +79,7 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const container = document.getElementById("news-container");
-    const entries = Array.from(container.querySelectorAll("email-entry"));
+    const entries = Array.from(container.querySelectorAll(".email-entry"));
 
     // Sortiere nach Datum (neueste zuerst)
     entries.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date));
