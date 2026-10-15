@@ -3,6 +3,19 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+def load_dotenv(path: Path) -> None:
+    """Liest KEY=VALUE-Zeilen aus .env; bereits gesetzte Variablen gewinnen."""
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        value = value.split(" #", 1)[0].strip().strip('"').strip("'")
+        os.environ.setdefault(key.strip(), value)
+
+
 def _env(name: str, default: str | None = None) -> str:
     value = os.environ.get(name, default)
     if value is None or value == "":

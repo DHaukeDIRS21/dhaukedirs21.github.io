@@ -31,7 +31,23 @@ Posts erscheinen unter deinem Namen (User-Token), Violet selbst schreibt nur in 
 4. Claude-API-Key unter <https://platform.claude.com> anlegen (der alte Key war zwischendurch deaktiviert – 401-Fehler am 14.10.).
 5. `.env.example` nach `.env` kopieren und ausfüllen.
 
-## Starten
+## Installation auf dem Windows-Laptop (Autostart)
+
+1. Den Ordner `violet` (bzw. `violet-windows.zip` entpacken) irgendwo ablegen.
+2. `install\install.cmd` doppelklicken. Das Skript
+   - installiert bei Bedarf Python 3.13 (per winget, ohne Admin),
+   - kopiert Violet nach `%LOCALAPPDATA%\Violet` und installiert die Pakete,
+   - **öffnet die `.env` im Editor** – Keys eintragen, speichern, im Fenster Enter drücken,
+   - legt die Aufgabe „Violet“ in der Aufgabenplanung an (Start 30 s nach deiner Anmeldung,
+     Neustart bei Absturz; falls die Aufgabenplanung gesperrt ist: Verknüpfung im Autostart-Ordner),
+   - startet Violet sofort.
+3. In Slack Violet `hilfe` schreiben.
+
+Log: `%LOCALAPPDATA%\Violet\data\violet.log`. Update = `install.cmd` erneut ausführen
+(.env und Daten bleiben). Entfernen: `install\uninstall.cmd`.
+Falls Sophos `pythonw.exe` blockiert, eine Ausnahme für `%LOCALAPPDATA%\Violet\.venv\Scripts\pythonw.exe` anlegen.
+
+## Starten (manuell / Server)
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate

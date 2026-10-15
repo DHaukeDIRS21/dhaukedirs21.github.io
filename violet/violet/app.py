@@ -6,15 +6,19 @@ Befehle per DM an Violet: siehe HELP_TEXT. Violet postet nie ohne Klick auf ✅ 
 from __future__ import annotations
 
 import logging
+import os
 import re
+import sys
 import time
 from datetime import timedelta
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
 from . import focus as F
-from .config import Config
+from .config import Config, load_dotenv
 from .llm import Claude, LLMError
 from .slackops import SlackOps, make_client
 from .store import Store
@@ -424,8 +428,27 @@ class Violet:
 
 
 def main() -> None:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-    Violet(Config.from_env()).run()
+    load_dotenv(Path(os.environ.get("VIOLET_ENV_FILE", ".env")))
+    cfg = Config.from_env()
+    cfg.data_dir.mkdir(parents=True, exist_ok=True)
+    handlers = [RotatingFileHandler(cfg.data_dir / "violet.log", maxBytes=2_000_000,
+                                    backupCount=3, encoding="utf-8")]
+    if sys.stderr is not None:  # unter pythonw (Autostart) gibt es keine Konsole
+        handlers.append(logging.StreamHandler())
+    logging.basicConfig(level=logging.INFO, handlers=handlers,
+                        format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    # Beim Hochfahren ist das Netz (WLAN/VPN) oft noch nicht da – geduldig warten.
+    delay = 10
+    while True:
+        try:
+            violet = Violet(cfg)
+            break
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Start fehlgeschlagen (%s) – neuer Versuch in %s s", exc, delay)
+            time.sleep(delay)
+            delay = min(delay * 2, 300)
+    log.info("Violet läuft.")
+    violet.run()
 
 
 if __name__ == "__main__":
